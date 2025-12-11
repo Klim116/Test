@@ -140,9 +140,9 @@ function initializeBridge() {
                 createUnityInstance(
                     CANVAS,
                     {
-                        dataUrl: 'Build/VK Save cristmas.data.br',
-                        frameworkUrl: 'Build/VK Save cristmas.framework.js.br',
-                        codeUrl: 'Build/VK Save cristmas.wasm.br',
+                        dataUrl: 'Build/VK Save cristmas.data.unityweb',
+                        frameworkUrl: 'Build/VK Save cristmas.framework.js.unityweb',
+                        codeUrl: 'Build/VK Save cristmas.wasm.unityweb',
                         streamingAssetsUrl: 'StreamingAssets',
                         companyName: 'DefaultCompany',
                         productName: 'Roby-Arena New Challenges',
