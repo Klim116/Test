@@ -135,17 +135,17 @@ function initializeBridge() {
             bridge.platform.on('pause_state_changed', isPaused => sendMessageToUnity('OnPauseStateChanged', isPaused.toString()))
 
             let unityLoader = document.createElement('script')
-            unityLoader.src = 'Build/VK Save cristmas.loader.js'
+            unityLoader.src = 'Build/VK Roulete.loader.js'
             unityLoader.onload = () => {
                 createUnityInstance(
                     CANVAS,
                     {
-                        dataUrl: 'Build/VK Save cristmas.data.unityweb',
-                        frameworkUrl: 'Build/VK Save cristmas.framework.js.unityweb',
-                        codeUrl: 'Build/VK Save cristmas.wasm.unityweb',
+                        dataUrl: 'Build/VK Roulete.data.unityweb',
+                        frameworkUrl: 'Build/VK Roulete.framework.js.unityweb',
+                        codeUrl: 'Build/VK Roulete.wasm.unityweb',
                         streamingAssetsUrl: 'StreamingAssets',
                         companyName: 'DefaultCompany',
-                        productName: 'Roby-Arena New Challenges',
+                        productName: 'Roulete',
                         productVersion: '0.1',
                         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
                         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
