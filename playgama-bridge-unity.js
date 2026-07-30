@@ -39,7 +39,7 @@ function onUnityLoadingProgressChanged(progress) {
             clearInterval(progressBarFillingInterval)
             progressBarFillingInterval = null
         }
-        bridge.setGameLoadingProgress(100)
+        bridge.game.setLoadingProgress(100)
         return
     }
 
@@ -53,7 +53,7 @@ function onUnityLoadingProgressChanged(progress) {
         return
     }
 
-    bridge.setGameLoadingProgress(progress * 100)
+    bridge.game.setLoadingProgress(progress * 100)
 }
 
 function completeProgressBarFilling() {
@@ -62,14 +62,14 @@ function completeProgressBarFilling() {
     }
 
     let currentPercent = 90
-    bridge.setGameLoadingProgress(currentPercent)
+    bridge.game.setLoadingProgress(currentPercent)
     progressBarFillingInterval = setInterval(() => {
         currentPercent++
         if (currentPercent > 99) {
             currentPercent = 99
         }
 
-        bridge.setGameLoadingProgress(currentPercent)
+        bridge.game.setLoadingProgress(currentPercent)
 
         if (currentPercent >= 99) {
             clearInterval(progressBarFillingInterval)
@@ -96,22 +96,20 @@ function addLocalBridge() {
     if (bridgeScript && bridgeScript.parentNode) {
         bridgeScript.onload = null
         bridgeScript.onerror = null
+        bridgeScript.src = ''
         bridgeScript.parentNode.removeChild(bridgeScript)
     }
 
-    window.bridge = null
-    window.playgamaBridge = null
-
     const scriptElement = document.createElement('script')
     scriptElement.src = './playgama-bridge.js'
+    document.body.appendChild(scriptElement)
     scriptElement.onload = function() {
         initializeBridge()
     }
-    document.body.appendChild(scriptElement)
 }
 
 bridgeScript = document.createElement('script')
-bridgeScript.src = 'https://bridge.playgama.com/v2/stable/playgama-bridge.js'
+bridgeScript.src = 'https://bridge.playgama.com/v1/stable/playgama-bridge.js'
 bridgeScript.onload = initializeBridge
 bridgeScript.onerror = addLocalBridge
 
@@ -128,27 +126,27 @@ function initializeBridge() {
     bridge
         .initialize()
         .then(() => {
-            bridge.setGameLoadingProgress(0)
+            bridge.game.setLoadingProgress(0)
             bridge.advertisement.on('banner_state_changed', state => sendMessageToUnity('OnBannerStateChanged', state))
             bridge.advertisement.on('interstitial_state_changed', state => sendMessageToUnity('OnInterstitialStateChanged', state))
             bridge.advertisement.on('rewarded_state_changed', state => sendMessageToUnity('OnRewardedStateChanged', state))
-            bridge.advertisement.on('advanced_banners_state_changed', state => sendMessageToUnity('OnAdvancedBannersStateChanged', state))
+            bridge.game.on('visibility_state_changed', state => sendMessageToUnity('OnVisibilityStateChanged', state))
             bridge.platform.on('audio_state_changed', isEnabled => sendMessageToUnity('OnAudioStateChanged', isEnabled.toString()))
             bridge.platform.on('pause_state_changed', isPaused => sendMessageToUnity('OnPauseStateChanged', isPaused.toString()))
 
             let unityLoader = document.createElement('script')
-            unityLoader.src = 'Build/VK Cheremsha.loader.js'
+            unityLoader.src = 'Build/Soliter King.loader.js'
             unityLoader.onload = () => {
                 createUnityInstance(
                     CANVAS,
                     {
-                        dataUrl: 'Build/VK Cheremsha.data.unityweb',
-                        frameworkUrl: 'Build/VK Cheremsha.framework.js.unityweb',
-                        codeUrl: 'Build/VK Cheremsha.wasm.unityweb',
+                        dataUrl: 'Build/Soliter King.data.unityweb',
+                        frameworkUrl: 'Build/Soliter King.framework.js.unityweb',
+                        codeUrl: 'Build/Soliter King.wasm.unityweb',
                         streamingAssetsUrl: 'StreamingAssets',
-                        companyName: 'DefaultCompany',
-                        productName: 'Cheremsha Crazy Trials',
-                        productVersion: '0.1',
+                        companyName: 'OMStore',
+                        productName: 'Solitaire Kings',
+                        productVersion: '1.0',
                         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
                         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
                     },
@@ -198,12 +196,12 @@ window.getIsPlatformAudioEnabled = function() {
     return bridge.platform.isAudioEnabled.toString()
 }
 
-window.getIsPlatformExternalCallsSupported = function() {
-    return bridge.platform.isExternalCallsSupported.toString()
+window.getIsPlatformGetAllGamesSupported = function() {
+    return bridge.platform.isGetAllGamesSupported.toString()
 }
 
-window.getIsPlatformExternalLinksAllowed = function() {
-    return bridge.platform.isExternalLinksAllowed.toString()
+window.getIsPlatformGetGameByIdSupported = function() {
+    return bridge.platform.isGetGameByIdSupported.toString()
 }
 
 window.sendMessageToPlatform = function(message, options) {
@@ -212,14 +210,6 @@ window.sendMessageToPlatform = function(message, options) {
     }
 
     bridge.platform.sendMessage(message, options)
-}
-
-window.sendCustomMessageToPlatform = function(id, options) {
-    if (options) {
-        options = JSON.parse(options)
-    }
-
-    bridge.platform.sendCustomMessage(id, options)
 }
 
 window.getServerTime = function() {
@@ -232,27 +222,30 @@ window.getServerTime = function() {
         })
 }
 
-// cross promo
-window.crossPromoGetGamesList = function() {
-    bridge.crossPromo.getGames()
+window.getAllGames = function() {
+    bridge.platform.getAllGames()
         .then(result => {
-            sendMessageToUnity('OnCrossPromoGetGamesListCompletedSuccess', JSON.stringify(result))
+            sendMessageToUnity('OnGetAllGamesCompletedSuccess', JSON.stringify(result))
         })
         .catch(error => {
-            sendMessageToUnity('OnCrossPromoGetGamesListCompletedFailed')
+            sendMessageToUnity('OnGetAllGamesCompletedFailed')
         })
 }
 
-window.crossPromoShow = function() {
-    bridge.crossPromo.show()
-}
+window.getGameById = function(options) {
+    if (options) {
+        options = JSON.parse(options)
+    } else {
+        options = {}
+    }
 
-window.crossPromoHide = function() {
-    bridge.crossPromo.hide()
-}
-
-window.getIsCrossPromoVisible = function() {
-    return bridge.crossPromo.isVisible.toString()
+    bridge.platform.getGameById(options)
+        .then(result => {
+            sendMessageToUnity('OnGetGameByIdCompletedSuccess', JSON.stringify(result))
+        })
+        .catch(error => {
+            sendMessageToUnity('OnGetGameByIdCompletedFailed')
+        })
 }
 
 // device
@@ -272,10 +265,6 @@ window.getIsPlayerAuthorizationSupported = function() {
 
 window.getIsPlayerAuthorized = function() {
     return bridge.player.isAuthorized.toString()
-}
-
-window.getIsPlayerGuest = function() {
-    return bridge.player.isGuest.toString()
 }
 
 window.getPlayerId = function() {
@@ -325,11 +314,29 @@ window.authorizePlayer = function(options) {
 }
 
 
+// game
+window.getVisibilityState = function() {
+    return bridge.game.visibilityState
+}
+
+
 // storage
-window.getStorageData = function(key) {
+window.getStorageDefaultType = function() {
+    return bridge.storage.defaultType
+}
+
+window.getIsStorageSupported = function(storageType) {
+    return bridge.storage.isSupported(storageType).toString()
+}
+
+window.getIsStorageAvailable = function(storageType) {
+    return bridge.storage.isAvailable(storageType).toString()
+}
+
+window.getStorageData = function(key, storageType) {
     let keys = key.split(STORAGE_KEYS_SEPARATOR)
 
-    bridge.storage.get(keys, false)
+    bridge.storage.get(keys, storageType, false)
         .then(data => {
             if (keys.length > 1) {
                 let values = []
@@ -365,11 +372,11 @@ window.getStorageData = function(key) {
         })
 }
 
-window.setStorageData = function(key, value) {
+window.setStorageData = function(key, value, storageType) {
     let keys = key.split(STORAGE_KEYS_SEPARATOR)
     let values = value.split(STORAGE_VALUES_SEPARATOR)
 
-    bridge.storage.set(keys, values)
+    bridge.storage.set(keys, values, storageType)
         .then(() => {
             sendMessageToUnity('OnSetStorageDataSuccess', key)
         })
@@ -378,10 +385,10 @@ window.setStorageData = function(key, value) {
         })
 }
 
-window.deleteStorageData = function(key) {
+window.deleteStorageData = function(key, storageType) {
     let keys = key.split(STORAGE_KEYS_SEPARATOR)
 
-    bridge.storage.delete(keys)
+    bridge.storage.delete(keys, storageType)
         .then(() => {
             sendMessageToUnity('OnDeleteStorageDataSuccess', key)
         })
@@ -444,26 +451,6 @@ window.showRewarded = function(placement) {
     bridge.advertisement.showRewarded(placement)
 }
 
-window.getIsAdvancedBannersSupported = function() {
-    return bridge.advertisement.isAdvancedBannersSupported.toString()
-}
-
-window.getAdvancedBannersState = function() {
-    if (bridge.advertisement.advancedBannersState) {
-        return bridge.advertisement.advancedBannersState
-    } else {
-        return ''
-    }
-}
-
-window.showAdvancedBanners = function(placement) {
-    bridge.advertisement.showAdvancedBanners(placement)
-}
-
-window.hideAdvancedBanners = function() {
-    bridge.advertisement.hideAdvancedBanners()
-}
-
 window.checkAdBlock = function() {
     bridge.advertisement.checkAdBlock()
         .then(result => {
@@ -510,6 +497,10 @@ window.getIsAddToFavoritesRewardSupported = function() {
 
 window.getIsRateSupported = function() {
     return bridge.social.isRateSupported.toString()
+}
+
+window.getIsExternalLinksAllowed = function() {
+    return bridge.social.isExternalLinksAllowed.toString()
 }
 
 window.share = function(options) {
@@ -743,16 +734,12 @@ window.getIsRemoteConfigSupported = function() {
     return bridge.remoteConfig.isSupported.toString()
 }
 
-window.remoteConfigSetContext = function(parameters) {
-    if (parameters) {
-        parameters = JSON.parse(parameters)
+window.remoteConfigGet = function(options) {
+    if (options) {
+        options = JSON.parse(options)
     }
 
-    bridge.remoteConfig.setContext(parameters)
-}
-
-window.remoteConfigGet = function() {
-    bridge.remoteConfig.get()
+    bridge.remoteConfig.get(options)
         .then(data => {
             if (typeof data !== 'string') {
                 data = JSON.stringify(data)
@@ -765,8 +752,24 @@ window.remoteConfigGet = function() {
         })
 }
 
-window.achievementsUnlock = function(id) {
-    bridge.achievements.unlock(id)
+window.getIsAchievementsSupported = function() {
+    return bridge.achievements.isSupported.toString()
+}
+
+window.getIsGetAchievementsListSupported = function() {
+    return bridge.achievements.isGetListSupported.toString()
+}
+
+window.getIsAchievementsNativePopupSupported = function() {
+    return bridge.achievements.isNativePopupSupported.toString()
+}
+
+window.achievementsUnlock = function(options) {
+    if (options) {
+        options = JSON.parse(options)
+    }
+
+    bridge.achievements.unlock(options)
         .then(() => {
             sendMessageToUnity('OnAchievementsUnlockCompleted', 'true')
         })
@@ -775,92 +778,38 @@ window.achievementsUnlock = function(id) {
         })
 }
 
-window.achievementsGetAchievements = function() {
-    bridge.achievements.getAchievements()
+window.achievementsShowNativePopup = function(options) {
+    if (options) {
+        options = JSON.parse(options)
+    }
+
+    bridge.achievements.showNativePopup(options)
+        .then(() => {
+            sendMessageToUnity('OnAchievementsShowNativePopupCompleted', 'true')
+        })
+        .catch(error => {
+            sendMessageToUnity('OnAchievementsShowNativePopupCompleted', 'false')
+        })
+}
+
+window.achievementsGetList = function(options) {
+    if (options) {
+        options = JSON.parse(options)
+    }
+
+    bridge.achievements.getList(options)
         .then(data => {
             if (data) {
-                sendMessageToUnity('OnAchievementsGetAchievementsCompletedSuccess', JSON.stringify(data))
+                if (typeof data !== 'string') {
+                    data = JSON.stringify(data)
+                }
+
+                sendMessageToUnity('OnAchievementsGetListCompletedSuccess', data)
             } else {
-                sendMessageToUnity('OnAchievementsGetAchievementsCompletedSuccess', '')
+                sendMessageToUnity('OnAchievementsGetListCompletedSuccess', '')
             }
         })
         .catch(error => {
-            sendMessageToUnity('OnAchievementsGetAchievementsCompletedFailed', 'false')
-        })
-}
-
-// tasks
-window.tasksGetTasks = function() {
-    bridge.tasks.getTasks()
-        .then(data => {
-            sendMessageToUnity('OnTasksGetTasksCompletedSuccess', data ? JSON.stringify(data) : '[]')
-        })
-        .catch(error => {
-            sendMessageToUnity('OnTasksGetTasksCompletedFailed', 'false')
-        })
-}
-
-window.tasksAddProgress = function(options) {
-    options = JSON.parse(options)
-
-    bridge.tasks.addProgress(options.metric, options.amount)
-        .then(() => {
-            sendMessageToUnity('OnTasksAddProgressCompletedSuccess', '')
-        })
-        .catch(error => {
-            sendMessageToUnity('OnTasksAddProgressCompletedFailed', 'false')
-        })
-}
-
-window.tasksClaimReward = function(options) {
-    options = JSON.parse(options)
-
-    bridge.tasks.claimReward(options.id)
-        .then(claimed => {
-            sendMessageToUnity('OnTasksClaimRewardCompletedSuccess', claimed ? 'true' : 'false')
-        })
-        .catch(error => {
-            sendMessageToUnity('OnTasksClaimRewardCompletedFailed', 'false')
-        })
-}
-
-// daily rewards
-window.dailyRewardsGetRewards = function() {
-    bridge.dailyRewards.getRewards()
-        .then(data => {
-            sendMessageToUnity('OnDailyRewardsGetRewardsCompletedSuccess', data ? JSON.stringify(data) : '[]')
-        })
-        .catch(error => {
-            sendMessageToUnity('OnDailyRewardsGetRewardsCompletedFailed', 'false')
-        })
-}
-
-window.dailyRewardsGetCurrentDay = function() {
-    bridge.dailyRewards.getCurrentDay()
-        .then(day => {
-            sendMessageToUnity('OnDailyRewardsGetCurrentDayCompletedSuccess', day.toString())
-        })
-        .catch(error => {
-            sendMessageToUnity('OnDailyRewardsGetCurrentDayCompletedFailed', 'false')
-        })
-}
-
-window.dailyRewardsGetCurrentReward = function() {
-    bridge.dailyRewards.getCurrentReward()
-        .then(reward => {
-            sendMessageToUnity('OnDailyRewardsGetCurrentRewardCompletedSuccess', reward ? reward.toString() : '')
-        })
-        .catch(error => {
-            sendMessageToUnity('OnDailyRewardsGetCurrentRewardCompletedFailed', 'false')
-        })
-}
-
-window.dailyRewardsClaimCurrentReward = function() {
-    bridge.dailyRewards.claimCurrentReward()
-        .then(claimed => {
-            sendMessageToUnity('OnDailyRewardsClaimCurrentRewardCompletedSuccess', claimed ? 'true' : 'false')
-        })
-        .catch(error => {
-            sendMessageToUnity('OnDailyRewardsClaimCurrentRewardCompletedFailed', 'false')
+            sendMessageToUnity('OnAchievementsGetListCompletedFailed', 'false')
         })
 }
