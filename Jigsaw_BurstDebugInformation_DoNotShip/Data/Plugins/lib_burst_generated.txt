@@ -1,0 +1,19 @@
+Library: C:\Unity\1. VK\VK Projects\VK Jigsaw_Girl\Temp\BurstOutput\Data\Plugins\lib_burst_generated
+--platform=Wasm
+--minimum-os-version=
+--backend=burst-llvm-21
+--target=WASM32
+--global-safety-checks-setting=Off
+--meta-data-generation=False
+--dump=Function
+--float-precision=Standard
+--target-framework=NetFramework
+--generate-link-xml=Temp\burst.link.xml
+--temp-folder=C:\Unity\1. VK\VK Projects\VK Jigsaw_Girl\Temp\Burst
+--generate-static-linkage-methods
+--key-folder=C:/Program Files/Unity/Hub/Editor/6000.5.8f1/Editor/Data/PlaybackEngines/WebGLSupport
+--decode-folder=C:\Unity\1. VK\VK Projects\VK Jigsaw_Girl\Library\Burst
+--output=C:\Unity\1. VK\VK Projects\VK Jigsaw_Girl\Temp\BurstOutput\Data\Plugins\lib_burst_generated
+--pdb-search-paths=Temp/ManagedSymbols/
+
+
