@@ -138,14 +138,14 @@ function initializeBridge() {
             bridge.platform.on('pause_state_changed', isPaused => sendMessageToUnity('OnPauseStateChanged', isPaused.toString()))
 
             let unityLoader = document.createElement('script')
-            unityLoader.src = 'Build/Retro Tanks City Battle.loader.js'
+            unityLoader.src = 'Build/VK Retro Tanks City Battle.loader.js'
             unityLoader.onload = () => {
                 createUnityInstance(
                     CANVAS,
                     {
-                        dataUrl: 'Build/Retro Tanks City Battle.data.unityweb',
-                        frameworkUrl: 'Build/Retro Tanks City Battle.framework.js.unityweb',
-                        codeUrl: 'Build/Retro Tanks City Battle.wasm.unityweb',
+                        dataUrl: 'Build/VK Retro Tanks City Battle.data.unityweb',
+                        frameworkUrl: 'Build/VK Retro Tanks City Battle.framework.js.unityweb',
+                        codeUrl: 'Build/VK Retro Tanks City Battle.wasm.unityweb',
                         streamingAssetsUrl: 'StreamingAssets',
                         companyName: 'DefaultCompany',
                         productName: 'Battle City',
