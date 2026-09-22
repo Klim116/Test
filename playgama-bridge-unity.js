@@ -125,7 +125,7 @@ document.head.appendChild(bridgeScript)
 function initializeBridge() {
     clearTimeout(bridgeTimeout)
     bridge.engine = 'unity'
-    bridge.gameVersion = '1.1'
+    bridge.gameVersion = '1.0'
     bridge
         .initialize()
         .then(() => {
@@ -138,18 +138,18 @@ function initializeBridge() {
             bridge.platform.on('pause_state_changed', isPaused => sendMessageToUnity('OnPauseStateChanged', isPaused.toString()))
 
             let unityLoader = document.createElement('script')
-            unityLoader.src = 'Build/ac764f8586a88a64918bcb1d620eb45f.loader.js'
+            unityLoader.src = 'Build/Retro Tanks City Battle.loader.js'
             unityLoader.onload = () => {
                 createUnityInstance(
                     CANVAS,
                     {
-                        dataUrl: 'Build/cb3094bd28754786a890f4363470efd0.data.unityweb',
-                        frameworkUrl: 'Build/5b50d8759a7acd8ba39c30a3b88e5be8.framework.js.unityweb',
-                        codeUrl: 'Build/4fc5d03f56cc0513b03b65ffb30eeca4.wasm.unityweb',
+                        dataUrl: 'Build/Retro Tanks City Battle.data.unityweb',
+                        frameworkUrl: 'Build/Retro Tanks City Battle.framework.js.unityweb',
+                        codeUrl: 'Build/Retro Tanks City Battle.wasm.unityweb',
                         streamingAssetsUrl: 'StreamingAssets',
                         companyName: 'DefaultCompany',
-                        productName: 'Jigsaw',
-                        productVersion: '1.1',
+                        productName: 'Battle City',
+                        productVersion: '1.0',
                         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
                         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
                     },
@@ -193,6 +193,23 @@ window.getPlatformTld = function() {
     } else {
         return ''
     }
+}
+
+window.getPlatformLaunchSource = function() {
+    let launchSource = bridge.platform.launchSource
+    if (typeof launchSource === 'string') {
+        return launchSource
+    } else {
+        return ''
+    }
+}
+
+window.getPlatformData = function() {
+    if (bridge.platform.data) {
+        return JSON.stringify(bridge.platform.data)
+    }
+
+    return ''
 }
 
 window.getIsPlatformAudioEnabled = function() {
@@ -513,6 +530,10 @@ window.getIsRateSupported = function() {
     return bridge.social.isRateSupported.toString()
 }
 
+window.getIsPostRewardSupported = function() {
+    return bridge.social.isPostRewardSupported.toString()
+}
+
 window.share = function(options) {
     if (options) {
         options = JSON.parse(options)
@@ -555,12 +576,12 @@ window.joinCommunity = function(options) {
         })
 }
 
-window.createPost = function(options) {
+window.createPost = function(options, payload) {
     if (options) {
         options = JSON.parse(options)
     }
 
-    bridge.social.createPost(options)
+    bridge.social.createPost(options, payload || undefined)
         .then(() => {
             sendMessageToUnity('OnCreatePostCompleted', 'true')
         })
@@ -616,6 +637,16 @@ window.getAddToFavoritesReward = function() {
         })
         .catch(error => {
             sendMessageToUnity('OnGetAddToFavoritesRewardCompleted', 'false')
+        })
+}
+
+window.getPostReward = function() {
+    bridge.social.getPostReward()
+        .then(data => {
+            sendMessageToUnity('OnGetPostRewardCompletedSuccess', data ? JSON.stringify(data) : '[]')
+        })
+        .catch(error => {
+            sendMessageToUnity('OnGetPostRewardCompletedFailed', 'false')
         })
 }
 
