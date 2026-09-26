@@ -1,8 +1,15 @@
 {
     "$schema": "https://bridge.playgama.com/v2/stable/schema.json",
     "advertisement": {
+        "minimumDelayBetweenInterstitial": 60,
+        "initialInterstitialDelay": 0,
         "interstitial": {
-            "preloadOnStart": true
+            "disable": false,
+            "preloadOnStart": "level_completed",
+            "placementFallback": "level_completed",
+            "placements": [
+                { "id": "level_completed" }
+            ]
         },
         "rewarded": {
             "preloadOnStart": true

@@ -138,14 +138,14 @@ function initializeBridge() {
             bridge.platform.on('pause_state_changed', isPaused => sendMessageToUnity('OnPauseStateChanged', isPaused.toString()))
 
             let unityLoader = document.createElement('script')
-            unityLoader.src = 'Build/4fd035cd3e32c59b62c244dc9e6fa435.loader.js'
+            unityLoader.src = 'Build/6e72f1d2f6df22ceaad60ab24aa3402d.loader.js'
             unityLoader.onload = () => {
                 createUnityInstance(
                     CANVAS,
                     {
-                        dataUrl: 'Build/624769e04f7fbbefabf70f3167cd872b.data.unityweb',
-                        frameworkUrl: 'Build/376550a81026650596964173123b7b3c.framework.js.unityweb',
-                        codeUrl: 'Build/cc7f5850b470a867a2a72ccf7c5d98ab.wasm.unityweb',
+                        dataUrl: 'Build/a241b27c26019c6b98bcf7c316bfacc1.data.unityweb',
+                        frameworkUrl: 'Build/9e5c700abbb8137d0f1a03e47f3c480a.framework.js.unityweb',
+                        codeUrl: 'Build/61c329ef96551ce0ef1671e9316b94c0.wasm.unityweb',
                         streamingAssetsUrl: 'StreamingAssets',
                         companyName: 'DefaultCompany',
                         productName: 'Test SDK',
