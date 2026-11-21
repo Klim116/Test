@@ -114,8 +114,8 @@ var CUSTOM_PARAMETERS = {
         CUSTOM_PARAMETERS.resize_window_prev_inner_height = innerHeight;
         CUSTOM_PARAMETERS.resize_window_prev_pixel_ratio = dpi;
         CUSTOM_PARAMETERS.resize_window_prev_fullscreen = fullscreen;
-        var width = 960;
-        var height = 640;
+        var width = 720;
+        var height = 1280;
         var targetRatio = width / height;
         var actualRatio = innerWidth / innerHeight;
     
@@ -1514,7 +1514,7 @@ Module["locateFile"] = function(path, scriptDirectory)
     // we need to replace it here with the correct project name.
     if (path == "dmengine.wasm" || path == "dmengine_release.wasm" || path == "dmengine_headless.wasm") {
         const session = GameStartup._session;
-        const engine = session && session.engine || EngineLoader.selectEngine("dmengine");
+        const engine = session && session.engine || EngineLoader.selectEngine("ColorLines");
         path = engine.wasm.url.substring(engine.wasm.url.lastIndexOf('/') + 1);
     }
     return scriptDirectory + path;

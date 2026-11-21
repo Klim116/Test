@@ -1,5 +1,5 @@
 [project]
-title = Пустой Проект
+title = ColorLines
 version = 1.0
 publisher = 
 developer = 
@@ -9,11 +9,11 @@ minimum_log_level = 1
 compress_archive = 1
 dependencies_metadata = 0
 bundle_resources = /res
-title_as_file_name = dmengine
+title_as_file_name = ColorLines
 
 [display]
-width = 960
-height = 640
+width = 720
+height = 1280
 high_dpi = 1
 samples = 0
 fullscreen = 0
@@ -173,7 +173,7 @@ fcm_application_id =
 manifest = /builtins/manifests/android/AndroidManifest.xml
 vkquality_database = /builtins/manifests/android/vkqualitydata.vkq
 iap_provider = GooglePlay
-input_method = HiddenInputField
+input_method = KeyEvent
 immersive_mode = 0
 display_cutout = 1
 debuggable = 0
