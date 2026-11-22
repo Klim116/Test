@@ -1,70 +1,22 @@
 {
     "$schema": "https://bridge.playgama.com/v2/stable/schema.json",
-    "device": {
-        "useBuiltInOrientationPopup": true,
-        "supportedOrientations": ["portrait"]
-    },
-    "platforms": {
-        "game_distribution": {
-            "gameId": ""
-        },
-        "telegram": {
-            "adsgramBlockId": ""
-        },
-        "y8": {
-            "gameId": "",
-            "adsenseId": "",
-            "channelId": ""
-        },
-        "lagged": {
-            "devId": "",
-            "publisherId": ""
-        },
-        "huawei": {
-            "appId": ""
-        },
-        "msn": {
-            "gameId": ""
-        },
-        "discord": {
-            "appId": ""
-        },
-        "gamepush": {
-            "projectId": "",
-            "publicToken": ""
-        },
-        "crazy_games": {
-            "xsollaProjectId": "",
-            "isSandbox": false,
-            "useUserToken": false
-        },
-        "facebook": {
-            "subscribeForNotificationsOnStart": true,
-            "sendAnalyticsEvents": false
-        },
-        "yandex": {
-            "useSignedData": false,
-            "sendAnalyticsEvents": false
-        },
-        "youtube": {
-            "sendAnalyticsEvents": false
-        },
-        "xiaomi": {
-            "adSenseId": "",
-            "hostId": ""
-        }
-    },
     "advertisement": {
-        "banner": {
-        },
         "interstitial": {
-            "preloadOnStart": true
+            "placements": [
+                { "id": "level_completed" },
+                { "id": "pause_menu" }
+            ],
+            "placementFallback": "level_completed",
+            "preloadOnStart": "level_completed"
         },
         "rewarded": {
-            "preloadOnStart": true
+            "placements": [
+                { "id": "double_coins" }
+            ],
+            "placementFallback": "double_coins",
+            "preloadOnStart": "double_coins"
         },
-        "useBuiltInErrorPopup": true,
-        "backfillId": ""
+        "useBuiltInErrorPopup": true
     },
     "payments": [],
     "leaderboards": [],
