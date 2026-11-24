@@ -27,6 +27,29 @@
     </head>
     <body>
         <canvas id="canvas" class="fullscreen-canvas"></canvas>
+        <script>
+            (function () {
+                var canvas = document.getElementById('canvas');
+                function fit() {
+                    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+                    var r = canvas.getBoundingClientRect();
+                    var w = Math.max(1, Math.round(r.width * dpr));
+                    var h = Math.max(1, Math.round(r.height * dpr));
+                    if (canvas.width !== w || canvas.height !== h) {
+                        canvas.width = w;
+                        canvas.height = h;
+                    }
+                }
+                window.addEventListener('resize', fit);
+                window.addEventListener('orientationchange', fit);
+                if (window.ResizeObserver) new ResizeObserver(fit).observe(canvas);
+                fit();
+                // Unity выставляет размер буфера при старте — повторяем после инициализации
+                setTimeout(fit, 500);
+                setTimeout(fit, 1500);
+                setTimeout(fit, 3000);
+            })();
+        </script>
         <script src="./playgama-bridge-unity.js"></script>
     </body>
 </html>
