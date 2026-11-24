@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
         <title>STUNT EJECT</title>
         <link rel="preconnect" href="https://bridge.playgama.com">
         <link rel="preload" href="Build/Play Gama Eject.wasm.unityweb" as="fetch" type="application/wasm" crossorigin>
@@ -13,24 +12,16 @@
             html, body {
                 width: 100%;
                 height: 100%;
-                height: 100dvh;
                 padding: 0px;
                 margin: 0px;
-                overflow: hidden;
-                background: #242424;
             }
             .fullscreen-canvas {
                 background: #242424;
-                display: block;
                 width: 100%;
                 height: 100%;
-                position: fixed;
-                inset: 0px;
-                touch-action: none;
-                -webkit-tap-highlight-color: transparent;
-                user-select: none;
-                -webkit-user-select: none;
-                -webkit-touch-callout: none;
+                position: absolute;
+                top: 0px;
+                left: 0px;
             }
         </style>
     </head>
