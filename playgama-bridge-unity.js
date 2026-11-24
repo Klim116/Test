@@ -288,7 +288,24 @@ window.getDeviceType = function() {
 }
 
 window.getSafeArea = function() {
-    return JSON.stringify(bridge.device.safeArea)
+    // Отступы площадки приходят в CSS-пикселях, а Screen.width в Unity — размер
+    // буфера канваса (css * dpr), поэтому переводим в пиксели канваса.
+    try {
+        var sa = (window.bridge && bridge.device && bridge.device.safeArea) || null;
+        if (!sa) return "{}";
+
+        var canvas = document.getElementById('canvas');
+        var k = (canvas && window.innerWidth) ? canvas.width / window.innerWidth : 1;
+
+        return JSON.stringify({
+            top: Math.round((sa.top || 0) * k),
+            bottom: Math.round((sa.bottom || 0) * k),
+            left: Math.round((sa.left || 0) * k),
+            right: Math.round((sa.right || 0) * k)
+        });
+    } catch (e) {
+        return "{}";
+    }
 }
 
 
