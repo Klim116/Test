@@ -30,18 +30,26 @@
         <script>
             (function () {
                 var canvas = document.getElementById('canvas');
+                var lastW = 0, lastH = 0;
+
                 function fit() {
                     var dpr = Math.min(window.devicePixelRatio || 1, 2);
                     var r = canvas.getBoundingClientRect();
                     var w = Math.max(1, Math.round(r.width * dpr));
                     var h = Math.max(1, Math.round(r.height * dpr));
-                    if (canvas.width !== w || canvas.height !== h) {
-                        canvas.width = w;
-                        canvas.height = h;
-                    }
+                    if (w === lastW && h === lastH) return;
+                    lastW = w; lastH = h;
+                    if (canvas.width !== w) canvas.width = w;
+                    if (canvas.height !== h) canvas.height = h;
+                    // Unity узнаёт о новом размере по событию resize
+                    try { window.dispatchEvent(new Event('resize')); } catch (e) { }
                 }
+
+                // Поворот в WebView/iframe часто не присылает resize — опрашиваем размер сами
+                setInterval(fit, 200);
                 window.addEventListener('resize', fit);
-                window.addEventListener('orientationchange', fit);
+                window.addEventListener('orientationchange', function () { setTimeout(fit, 50); });
+                if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
                 if (window.ResizeObserver) new ResizeObserver(fit).observe(canvas);
                 fit();
                 // Unity выставляет размер буфера при старте — повторяем после инициализации
