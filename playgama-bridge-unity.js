@@ -5,7 +5,21 @@ if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
     document.getElementsByTagName('head')[0].appendChild(meta)
 }
 
-const CANVAS = document.getElementById('canvas')
+// Канвас может ещё не существовать, если скрипт подключён раньше body —
+// поэтому ищем его лениво и при отсутствии создаём сами.
+function getUnityCanvas() {
+    let canvas = document.getElementById('canvas') || document.getElementById('unity-canvas')
+    if (!canvas) canvas = document.querySelector('canvas')
+    if (!canvas) {
+        console.warn('PlaygamaBridge: canvas не найден в DOM, создаю')
+        canvas = document.createElement('canvas')
+        canvas.id = 'canvas'
+        canvas.className = 'fullscreen-canvas'
+        canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:#242424;touch-action:none;'
+        document.body.appendChild(canvas)
+    }
+    return canvas
+}
 const STORAGE_DATA_SEPARATOR = '{bridge_data_separator}'
 const STORAGE_KEYS_SEPARATOR = '{bridge_keys_separator}'
 const STORAGE_VALUES_SEPARATOR = '{bridge_values_separator}'
@@ -81,7 +95,7 @@ function completeProgressBarFilling() {
 
 window.addEventListener('pointerdown', () => {
     window.focus()
-    CANVAS.focus()
+    getUnityCanvas().focus()
 })
 
 let bridgeScript = null
@@ -141,7 +155,7 @@ function initializeBridge() {
             unityLoader.src = 'Build/Play Gama Eject.loader.js'
             unityLoader.onload = () => {
                 createUnityInstance(
-                    CANVAS,
+                    getUnityCanvas(),
                     {
                         dataUrl: 'Build/Play Gama Eject.data.unityweb',
                         frameworkUrl: 'Build/Play Gama Eject.framework.js.unityweb',
@@ -156,7 +170,7 @@ function initializeBridge() {
                     onUnityLoadingProgressChanged)
                     .then((unityInstance) => {
                         window.unityInstance = unityInstance
-                        CANVAS.focus()
+                        getUnityCanvas().focus()
                         flushMessageQueue()
                     })
                     .catch((error) => {
