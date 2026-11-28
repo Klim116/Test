@@ -3,8 +3,11 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>STUNT EJECT</title>
-        <link rel="preconnect" href="https://bridge.playgama.com">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Yeet the Driver</title>
+        <script src="./playgama-bridge-unity.js"></script>
         <link rel="preload" href="Build/Play Gama Eject.wasm.unityweb" as="fetch" type="application/wasm" crossorigin>
         <link rel="preload" href="Build/Play Gama Eject.data.unityweb" as="fetch" crossorigin>
         <link rel="preload" href="Build/Play Gama Eject.framework.js.unityweb" as="script">
@@ -14,6 +17,15 @@
                 height: 100%;
                 padding: 0px;
                 margin: 0px;
+                overflow: hidden;
+                background: #242424;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+                touch-action: none;
+                overscroll-behavior: none;
             }
             .fullscreen-canvas {
                 background: #242424;
@@ -22,6 +34,7 @@
                 position: absolute;
                 top: 0px;
                 left: 0px;
+                touch-action: none;
             }
         </style>
     </head>
@@ -31,6 +44,11 @@
             (function () {
                 var canvas = document.getElementById('canvas');
                 var lastW = 0, lastH = 0;
+
+                // Долгое нажатие не должно выделять текст и открывать меню браузера
+                document.addEventListener('contextmenu', function (e) { e.preventDefault(); }, { passive: false });
+                document.addEventListener('selectstart', function (e) { e.preventDefault(); });
+                document.addEventListener('dragstart', function (e) { e.preventDefault(); });
 
                 function fit() {
                     var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -58,6 +76,5 @@
                 setTimeout(fit, 3000);
             })();
         </script>
-        <script src="./playgama-bridge-unity.js"></script>
     </body>
 </html>

@@ -148,7 +148,7 @@ function initializeBridge() {
                         codeUrl: 'Build/Play Gama Eject.wasm.unityweb',
                         streamingAssetsUrl: 'StreamingAssets',
                         companyName: 'DefaultCompany',
-                        productName: 'STUNT EJECT',
+                        productName: 'Yeet the Driver',
                         productVersion: '0.1.0',
                         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
                         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
